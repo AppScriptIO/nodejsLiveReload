@@ -1,21 +1,12 @@
 {
   "name": "@dependency/nodejsLiveReload",
   "version": "1.0.0",
-  "description": "",
-  "main": "./source/entrypoint.js",
-  "scripts": {
-    "test": "",
-    "start": "./entrypoint.sh build"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-  },
-  "engines": {
-    "node": ">=0.12.0"
-  },
+  "main": "./source/entrypoint/api/transpilation.entrypoint.js",
+  "scripts": {},
   "dependencies": {
-    "browser-sync": "^2.18.6",
-    "gulp": "github:gulpjs/gulp#4.0"
-  }
+    "browser-sync": "*",
+    "chokidar": "*",
+    "core-js": "*"
+  },
+  "devDependencies": {}
 }
