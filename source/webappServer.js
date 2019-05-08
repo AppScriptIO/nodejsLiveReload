@@ -1,11 +1,11 @@
 import path from 'path'
 const BrowserSync = require('browser-sync')
-import config from '../configuration/configuration.js'
+import config from './functionality.config.js'
 const ServerLivereload = require('./utility/processReload.js')
 
 export function runWebappServer({
     filename = 'entrypoint.js',
-    fileBasePath = 'path' || config.directory.serverSidePath, // /project/application/distribution/serverSide/
+    fileBasePath = 'path' || config.directory.serverSidePath,
     targetAppHost = 'localhost',
     targetAppPort = 9903,
     browserSync, // BrowserSync instance
