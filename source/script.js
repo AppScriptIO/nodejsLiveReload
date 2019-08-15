@@ -1,7 +1,2 @@
-import { watchFile } from './watchFile.js'
-import { runWebappServer } from './webappServer.js'
-
-export { 
-    watchFile,
-    runWebappServer
-}
+export * from './watchFile.js'
+export * from './webappServer.js'

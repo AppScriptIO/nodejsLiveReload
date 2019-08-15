@@ -2,7 +2,9 @@
   "name": "@dependency/nodejsLiveReload",
   "version": "1.0.2",
   "main": "./entrypoint/programmaticAPI",
-  "scripts": {},
+  "scripts": {
+    "buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\""
+  },
   "dependencies": {
     "browser-sync": "*",
     "chokidar": "*",
