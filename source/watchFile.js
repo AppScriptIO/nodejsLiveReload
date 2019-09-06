@@ -1,7 +1,7 @@
 import chokidar from 'chokidar'
 import { Promise } from 'core-js';
 
-export async function watchFile({ 
+export function watchFile({ 
     fileArray,
     triggerCallback, 
     // Following delay solves the issue of closley received notifications, preventing duplicate actions for the same related notifications (e.g. docker-windows-volume-watcher mistakengly triggers duplicate notifications for each chagne).
@@ -22,7 +22,7 @@ export async function watchFile({
                     console.group('• Watching the following list of paths:')
                     console.log(watcher.getWatched()) // list watched filse
                     console.groupEnd()
-                }
+                } else console.log('• Watching JS files.')
                 resolve()
             })
             .on('add', path => { // when target/path added to watcher
