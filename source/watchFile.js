@@ -24,7 +24,7 @@ export function watchFile({
           console.log(watcher.getWatched()) // list watched filse
           console.groupEnd()
         } else console.log('• Watching JS files.')
-        resolve()
+        resolve(watcher)
       })
       .on('add', path => {
         // when target/path added to watcher
