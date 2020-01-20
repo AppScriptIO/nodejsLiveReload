@@ -18,7 +18,7 @@ export class ManageSubprocess extends EventEmitter {
   runInSubprocess() {
     if (this.subprocess) this.subprocess.kill()
 
-    this.argumentList = arguments.length == 0 ? this.argumentList || [] : arguments
+    this.argumentList = [...(arguments.length == 0 ? this.argumentList || [] : arguments)]
 
     let stringifyArgs = JSON.stringify(this.argumentList) // parametrs for module to be run in subprocess.
     // running in subprocess prevents allows to control the application and terminate it when needed.
