@@ -3,6 +3,7 @@ import { Promise } from 'core-js'
 
 // Watch files and when a modification detected, execute callback
 export function watchFile({
+  // TODO: make sure explicitly adding `./node_modules/` into the this array, will prevent it from being ignored.
   fileArray,
   triggerCallback,
   // Following delay solves the issue of closley received notifications, preventing duplicate actions for the same related notifications (e.g. docker-windows-volume-watcher mistakengly triggers duplicate notifications for each chagne).
