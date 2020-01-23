@@ -1,7 +1,7 @@
 import path from 'path'
 import assert from 'assert'
 import BrowserSync from 'browser-sync'
-import { watchFile } from '@dependency/nodejsLiveReload'
+import { watchFile } from '@deployment/nodejsLiveReload'
 // import proxyMiddleware from 'http-proxy-middleware'
 
 export async function browserLivereload({
