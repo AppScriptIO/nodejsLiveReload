@@ -1,49 +1,50 @@
-import chokidar from 'chokidar'
-import { Promise } from 'core-js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.watchFile = watchFile;var _chokidar = _interopRequireDefault(require("chokidar"));
+var _coreJs = require("core-js");
 
-// Watch files and when a modification detected, execute callback
-export function watchFile({
-  // TODO: make sure explicitly adding `./node_modules/` into the this array, will prevent it from being ignored.
+
+function watchFile({
+
   fileArray,
   triggerCallback,
-  // Following delay solves the issue of closley received notifications, preventing duplicate actions for the same related notifications (e.g. docker-windows-volume-watcher mistakengly triggers duplicate notifications for each chagne).
-  notificationTriggerDelay = 100, // 100 ms between accepting notifications and triggering action. This prevents duplicate executions fron wrong immediate duplicate notification fo the container.
-  notificationTrigger = true, // on / off switch for taking action after a notification received
-  ignoreNodeModules = true,
-  logMessage = false, // console log messages on events e.g. log list of files being watched.
-}) {
-  let watcher = chokidar.watch(fileArray, {
-    ignored: ignoreNodeModules ? new RegExp(/node_modules/) : false,
-    usePolling: false,
-  })
 
-  return new Promise((resolve, reject) => {
-    watcher
-      .on('ready', path => {
-        if (logMessage) {
-          console.group('• Watching the following list of paths:')
-          console.log(watcher.getWatched()) // list watched filse
-          console.groupEnd()
-        } else console.log('• Watching JS files.')
-        resolve(watcher)
-      })
-      .on('add', path => {
-        // when target/path added to watcher
-        // console.log(`File ${path} has been added`)
-      })
-      .on('change', path => {
-        if (notificationTrigger) {
-          if (logMessage) console.log(`• File ${path} has been changed.`)
-          triggerCallback()
-        }
-        // allow triggering of action from next notification only after delay.
-        notificationTrigger = false
-        setTimeout(() => {
-          notificationTrigger = true
-        }, notificationTriggerDelay)
-      })
-      .on('unlink', path => {
-        if (logMessage) console.log(`• File ${path} has been removed. No action taken regarding running tests.`)
-      })
-  })
+  notificationTriggerDelay = 100,
+  notificationTrigger = true,
+  ignoreNodeModules = true,
+  logMessage = false })
+{
+  let watcher = _chokidar.default.watch(fileArray, {
+    ignored: ignoreNodeModules ? new RegExp(/node_modules/) : false,
+    usePolling: false });
+
+
+  return new _coreJs.Promise((resolve, reject) => {
+    watcher.
+    on('ready', path => {
+      if (logMessage) {
+        console.group('• Watching the following list of paths:');
+        console.log(watcher.getWatched());
+        console.groupEnd();
+      } else console.log('• Watching JS files.');
+      resolve(watcher);
+    }).
+    on('add', path => {
+
+
+    }).
+    on('change', path => {
+      if (notificationTrigger) {
+        if (logMessage) console.log(`• File ${path} has been changed.`);
+        triggerCallback();
+      }
+
+      notificationTrigger = false;
+      setTimeout(() => {
+        notificationTrigger = true;
+      }, notificationTriggerDelay);
+    }).
+    on('unlink', path => {
+      if (logMessage) console.log(`• File ${path} has been removed. No action taken regarding running tests.`);
+    });
+  });
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NvdXJjZS93YXRjaEZpbGUuanMiXSwibmFtZXMiOlsid2F0Y2hGaWxlIiwiZmlsZUFycmF5IiwidHJpZ2dlckNhbGxiYWNrIiwibm90aWZpY2F0aW9uVHJpZ2dlckRlbGF5Iiwibm90aWZpY2F0aW9uVHJpZ2dlciIsImlnbm9yZU5vZGVNb2R1bGVzIiwibG9nTWVzc2FnZSIsIndhdGNoZXIiLCJjaG9raWRhciIsIndhdGNoIiwiaWdub3JlZCIsIlJlZ0V4cCIsInVzZVBvbGxpbmciLCJQcm9taXNlIiwicmVzb2x2ZSIsInJlamVjdCIsIm9uIiwicGF0aCIsImNvbnNvbGUiLCJncm91cCIsImxvZyIsImdldFdhdGNoZWQiLCJncm91cEVuZCIsInNldFRpbWVvdXQiXSwibWFwcGluZ3MiOiI4TEFBQTtBQUNBOzs7QUFHTyxTQUFTQSxTQUFULENBQW1COztBQUV4QkMsRUFBQUEsU0FGd0I7QUFHeEJDLEVBQUFBLGVBSHdCOztBQUt4QkMsRUFBQUEsd0JBQXdCLEdBQUcsR0FMSDtBQU14QkMsRUFBQUEsbUJBQW1CLEdBQUcsSUFORTtBQU94QkMsRUFBQUEsaUJBQWlCLEdBQUcsSUFQSTtBQVF4QkMsRUFBQUEsVUFBVSxHQUFHLEtBUlcsRUFBbkI7QUFTSjtBQUNELE1BQUlDLE9BQU8sR0FBR0Msa0JBQVNDLEtBQVQsQ0FBZVIsU0FBZixFQUEwQjtBQUN0Q1MsSUFBQUEsT0FBTyxFQUFFTCxpQkFBaUIsR0FBRyxJQUFJTSxNQUFKLENBQVcsY0FBWCxDQUFILEdBQWdDLEtBRHBCO0FBRXRDQyxJQUFBQSxVQUFVLEVBQUUsS0FGMEIsRUFBMUIsQ0FBZDs7O0FBS0EsU0FBTyxJQUFJQyxlQUFKLENBQVksQ0FBQ0MsT0FBRCxFQUFVQyxNQUFWLEtBQXFCO0FBQ3RDUixJQUFBQSxPQUFPO0FBQ0pTLElBQUFBLEVBREgsQ0FDTSxPQUROLEVBQ2VDLElBQUksSUFBSTtBQUNuQixVQUFJWCxVQUFKLEVBQWdCO0FBQ2RZLFFBQUFBLE9BQU8sQ0FBQ0MsS0FBUixDQUFjLHlDQUFkO0FBQ0FELFFBQUFBLE9BQU8sQ0FBQ0UsR0FBUixDQUFZYixPQUFPLENBQUNjLFVBQVIsRUFBWjtBQUNBSCxRQUFBQSxPQUFPLENBQUNJLFFBQVI7QUFDRCxPQUpELE1BSU9KLE9BQU8sQ0FBQ0UsR0FBUixDQUFZLHNCQUFaO0FBQ1BOLE1BQUFBLE9BQU8sQ0FBQ1AsT0FBRCxDQUFQO0FBQ0QsS0FSSDtBQVNHUyxJQUFBQSxFQVRILENBU00sS0FUTixFQVNhQyxJQUFJLElBQUk7OztBQUdsQixLQVpIO0FBYUdELElBQUFBLEVBYkgsQ0FhTSxRQWJOLEVBYWdCQyxJQUFJLElBQUk7QUFDcEIsVUFBSWIsbUJBQUosRUFBeUI7QUFDdkIsWUFBSUUsVUFBSixFQUFnQlksT0FBTyxDQUFDRSxHQUFSLENBQWEsVUFBU0gsSUFBSyxvQkFBM0I7QUFDaEJmLFFBQUFBLGVBQWU7QUFDaEI7O0FBRURFLE1BQUFBLG1CQUFtQixHQUFHLEtBQXRCO0FBQ0FtQixNQUFBQSxVQUFVLENBQUMsTUFBTTtBQUNmbkIsUUFBQUEsbUJBQW1CLEdBQUcsSUFBdEI7QUFDRCxPQUZTLEVBRVBELHdCQUZPLENBQVY7QUFHRCxLQXZCSDtBQXdCR2EsSUFBQUEsRUF4QkgsQ0F3Qk0sUUF4Qk4sRUF3QmdCQyxJQUFJLElBQUk7QUFDcEIsVUFBSVgsVUFBSixFQUFnQlksT0FBTyxDQUFDRSxHQUFSLENBQWEsVUFBU0gsSUFBSyw2REFBM0I7QUFDakIsS0ExQkg7QUEyQkQsR0E1Qk0sQ0FBUDtBQTZCRCIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBjaG9raWRhciBmcm9tICdjaG9raWRhcidcbmltcG9ydCB7IFByb21pc2UgfSBmcm9tICdjb3JlLWpzJ1xuXG4vLyBXYXRjaCBmaWxlcyBhbmQgd2hlbiBhIG1vZGlmaWNhdGlvbiBkZXRlY3RlZCwgZXhlY3V0ZSBjYWxsYmFja1xuZXhwb3J0IGZ1bmN0aW9uIHdhdGNoRmlsZSh7XG4gIC8vIFRPRE86IG1ha2Ugc3VyZSBleHBsaWNpdGx5IGFkZGluZyBgLi9ub2RlX21vZHVsZXMvYCBpbnRvIHRoZSB0aGlzIGFycmF5LCB3aWxsIHByZXZlbnQgaXQgZnJvbSBiZWluZyBpZ25vcmVkLlxuICBmaWxlQXJyYXksXG4gIHRyaWdnZXJDYWxsYmFjayxcbiAgLy8gRm9sbG93aW5nIGRlbGF5IHNvbHZlcyB0aGUgaXNzdWUgb2YgY2xvc2xleSByZWNlaXZlZCBub3RpZmljYXRpb25zLCBwcmV2ZW50aW5nIGR1cGxpY2F0ZSBhY3Rpb25zIGZvciB0aGUgc2FtZSByZWxhdGVkIG5vdGlmaWNhdGlvbnMgKGUuZy4gZG9ja2VyLXdpbmRvd3Mtdm9sdW1lLXdhdGNoZXIgbWlzdGFrZW5nbHkgdHJpZ2dlcnMgZHVwbGljYXRlIG5vdGlmaWNhdGlvbnMgZm9yIGVhY2ggY2hhZ25lKS5cbiAgbm90aWZpY2F0aW9uVHJpZ2dlckRlbGF5ID0gMTAwLCAvLyAxMDAgbXMgYmV0d2VlbiBhY2NlcHRpbmcgbm90aWZpY2F0aW9ucyBhbmQgdHJpZ2dlcmluZyBhY3Rpb24uIFRoaXMgcHJldmVudHMgZHVwbGljYXRlIGV4ZWN1dGlvbnMgZnJvbiB3cm9uZyBpbW1lZGlhdGUgZHVwbGljYXRlIG5vdGlmaWNhdGlvbiBmbyB0aGUgY29udGFpbmVyLlxuICBub3RpZmljYXRpb25UcmlnZ2VyID0gdHJ1ZSwgLy8gb24gLyBvZmYgc3dpdGNoIGZvciB0YWtpbmcgYWN0aW9uIGFmdGVyIGEgbm90aWZpY2F0aW9uIHJlY2VpdmVkXG4gIGlnbm9yZU5vZGVNb2R1bGVzID0gdHJ1ZSxcbiAgbG9nTWVzc2FnZSA9IGZhbHNlLCAvLyBjb25zb2xlIGxvZyBtZXNzYWdlcyBvbiBldmVudHMgZS5nLiBsb2cgbGlzdCBvZiBmaWxlcyBiZWluZyB3YXRjaGVkLlxufSkge1xuICBsZXQgd2F0Y2hlciA9IGNob2tpZGFyLndhdGNoKGZpbGVBcnJheSwge1xuICAgIGlnbm9yZWQ6IGlnbm9yZU5vZGVNb2R1bGVzID8gbmV3IFJlZ0V4cCgvbm9kZV9tb2R1bGVzLykgOiBmYWxzZSxcbiAgICB1c2VQb2xsaW5nOiBmYWxzZSxcbiAgfSlcblxuICByZXR1cm4gbmV3IFByb21pc2UoKHJlc29sdmUsIHJlamVjdCkgPT4ge1xuICAgIHdhdGNoZXJcbiAgICAgIC5vbigncmVhZHknLCBwYXRoID0+IHtcbiAgICAgICAgaWYgKGxvZ01lc3NhZ2UpIHtcbiAgICAgICAgICBjb25zb2xlLmdyb3VwKCfigKIgV2F0Y2hpbmcgdGhlIGZvbGxvd2luZyBsaXN0IG9mIHBhdGhzOicpXG4gICAgICAgICAgY29uc29sZS5sb2cod2F0Y2hlci5nZXRXYXRjaGVkKCkpIC8vIGxpc3Qgd2F0Y2hlZCBmaWxzZVxuICAgICAgICAgIGNvbnNvbGUuZ3JvdXBFbmQoKVxuICAgICAgICB9IGVsc2UgY29uc29sZS5sb2coJ+KAoiBXYXRjaGluZyBKUyBmaWxlcy4nKVxuICAgICAgICByZXNvbHZlKHdhdGNoZXIpXG4gICAgICB9KVxuICAgICAgLm9uKCdhZGQnLCBwYXRoID0+IHtcbiAgICAgICAgLy8gd2hlbiB0YXJnZXQvcGF0aCBhZGRlZCB0byB3YXRjaGVyXG4gICAgICAgIC8vIGNvbnNvbGUubG9nKGBGaWxlICR7cGF0aH0gaGFzIGJlZW4gYWRkZWRgKVxuICAgICAgfSlcbiAgICAgIC5vbignY2hhbmdlJywgcGF0aCA9PiB7XG4gICAgICAgIGlmIChub3RpZmljYXRpb25UcmlnZ2VyKSB7XG4gICAgICAgICAgaWYgKGxvZ01lc3NhZ2UpIGNvbnNvbGUubG9nKGDigKIgRmlsZSAke3BhdGh9IGhhcyBiZWVuIGNoYW5nZWQuYClcbiAgICAgICAgICB0cmlnZ2VyQ2FsbGJhY2soKVxuICAgICAgICB9XG4gICAgICAgIC8vIGFsbG93IHRyaWdnZXJpbmcgb2YgYWN0aW9uIGZyb20gbmV4dCBub3RpZmljYXRpb24gb25seSBhZnRlciBkZWxheS5cbiAgICAgICAgbm90aWZpY2F0aW9uVHJpZ2dlciA9IGZhbHNlXG4gICAgICAgIHNldFRpbWVvdXQoKCkgPT4ge1xuICAgICAgICAgIG5vdGlmaWNhdGlvblRyaWdnZXIgPSB0cnVlXG4gICAgICAgIH0sIG5vdGlmaWNhdGlvblRyaWdnZXJEZWxheSlcbiAgICAgIH0pXG4gICAgICAub24oJ3VubGluaycsIHBhdGggPT4ge1xuICAgICAgICBpZiAobG9nTWVzc2FnZSkgY29uc29sZS5sb2coYOKAoiBGaWxlICR7cGF0aH0gaGFzIGJlZW4gcmVtb3ZlZC4gTm8gYWN0aW9uIHRha2VuIHJlZ2FyZGluZyBydW5uaW5nIHRlc3RzLmApXG4gICAgICB9KVxuICB9KVxufVxuIl19
