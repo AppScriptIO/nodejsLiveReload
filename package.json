@@ -1,6 +1,6 @@
 {
 	"name": "@deployment/nodejsLiveReload",
-	"version": "2.2.1",
+	"version": "2.2.2",
 	"main": "./entrypoint/programmaticAPI",
 	"scripts": {
 		"buildAndRelease": "yarn run scriptManager shouldCompileScript=true @deployment/deploymentScript \".buildAndRelease.moduleProject({})\"",
