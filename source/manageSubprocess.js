@@ -4,6 +4,17 @@ import childProcess from 'child_process'
 // manage forked subprocess allowing to restart the subprocess on demand.
 // Process signals - http://man7.org/linux/man-pages/man7/signal.7.html
 export class ManageSubprocess extends EventEmitter {
+  static subprocessList = []
+
+  static terminateSubprocess() {
+    for (let subprocess of ManageSubprocess.subprocessList) {
+      if (!subprocess.killed) {
+        // console.log('sending kill to subprocess ' + subprocess.pid)
+        subprocess.kill('SIGTERM')
+      }
+    }
+  }
+
   subprocess // child subprocess
   cliAdapterPath // the path to the cli entrypoint file, that will receive arguments from the child process fork function and pass it to the programmatic module api.
   argumentList // cached arguments to be used for running subprocesses
@@ -11,12 +22,11 @@ export class ManageSubprocess extends EventEmitter {
   constructor({ cliAdapterPath }) {
     super()
     this.cliAdapterPath = cliAdapterPath
-
-    process.on('close', (code, signal) => console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`))
+    this.suprocess = null
   }
 
   runInSubprocess() {
-    if (this.subprocess) this.subprocess.kill()
+    if (this.subprocess) this.subprocess.kill('SIGTERM')
 
     this.argumentList = [...(arguments.length == 0 ? this.argumentList || [] : arguments)]
 
@@ -39,13 +49,21 @@ export class ManageSubprocess extends EventEmitter {
 
     this.subprocess.on('exit', (code, signal) => console.log(`[Subprocess ${this.subprocess.pid}]: signal ${signal}, code ${code};`))
 
-    // clean up if an error goes unhandled.
-    process.on('SIGINT', (code, signal) => {
-      process.kill(this.subprocess.pid, 'SIGTERM')
-      console.log(`[Process ${process.pid}]: interrupt;`)
-      // process.exit(0) // process.abort()  // process.kill()
-    })
+    ManageSubprocess.subprocessList.push(this.subprocess)
 
     return this.subprocess
   }
 }
+
+// clean up if an error goes unhandled or interrupt signal received.
+// TODO: for some reason the hooks for process events are not executed. Fix.
+// process.exit(0) // process.abort()  // process.kill()
+// process.on('exit', (code, signal) => {
+//   console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`)
+//   ManageSubprocess.terminateSubprocess()
+// })
+// process.on('close', (code, signal) => console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`))
+// process.on('SIGTERM', (code, signal) => console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`))
+process.on('SIGINT', (code, signal) => {
+  console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`)
+})
