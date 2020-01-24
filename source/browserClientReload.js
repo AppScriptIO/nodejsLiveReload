@@ -12,8 +12,10 @@ export async function browserLivereload({
 } = {}) {
   assert(targetProject, `targetProject must be passed.`)
 
-  let browserSync = BrowserSync.create('Info - locahost server'),
+  let browserSync = BrowserSync.create('BrowserProxySever'),
     browserSyncProxy = { port: 9090, host: 'localhost' }
+
+  process.on('SIGINT', () => browserSync.exit()) // make sure to close socket to prevent hanging node process.
 
   browserSync.init({
     host: browserSyncProxy.host,
