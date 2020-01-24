@@ -1,51 +1,51 @@
-import EventEmitter from 'events'
-import childProcess from 'child_process'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.ManageSubprocess = void 0;var _events = _interopRequireDefault(require("events"));
+var _child_process = _interopRequireDefault(require("child_process"));
 
-// manage forked subprocess allowing to restart the subprocess on demand.
-// Process signals - http://man7.org/linux/man-pages/man7/signal.7.html
-export class ManageSubprocess extends EventEmitter {
-  subprocess // child subprocess
-  cliAdapterPath // the path to the cli entrypoint file, that will receive arguments from the child process fork function and pass it to the programmatic module api.
-  argumentList // cached arguments to be used for running subprocesses
+
+
+class ManageSubprocess extends _events.default {
+
+
+
 
   constructor({ cliAdapterPath }) {
-    super()
-    this.cliAdapterPath = cliAdapterPath
+    super();
+    this.cliAdapterPath = cliAdapterPath;
 
-    process.on('close', (code, signal) => console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`))
+    process.on('close', (code, signal) => console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`));
   }
 
   runInSubprocess() {
-    if (this.subprocess) this.subprocess.kill()
+    if (this.subprocess) this.subprocess.kill();
 
-    this.argumentList = [...(arguments.length == 0 ? this.argumentList || [] : arguments)]
+    this.argumentList = [...(arguments.length == 0 ? this.argumentList || [] : arguments)];
 
-    let stringifyArgs = JSON.stringify(this.argumentList) // parametrs for module to be run in subprocess.
-    // running in subprocess prevents allows to control the application and terminate it when needed.
-    this.subprocess = childProcess
-      .fork(this.cliAdapterPath, [stringifyArgs], {
-        stdio: [0, 1, 2, 'ipc'],
-        execArgv: [
-          // '--inspect-brk=1272', // inspect subprocess with random port to prevent conflicts with the main process in case it's inspect flag was turned on.
-          '--no-lazy', // for debugging purposes will load modules sequentially
-        ],
-      })
-      .on('message', message => {
-        if (message?.status == 'ready') this.emit('ready')
-      })
-      .on('close', code => {
-        if (code === 8) console.error('Error detected, waiting for changes.')
-      })
+    let stringifyArgs = JSON.stringify(this.argumentList);
 
-    this.subprocess.on('exit', (code, signal) => console.log(`[Subprocess ${this.subprocess.pid}]: signal ${signal}, code ${code};`))
+    this.subprocess = _child_process.default.
+    fork(this.cliAdapterPath, [stringifyArgs], {
+      stdio: [0, 1, 2, 'ipc'],
+      execArgv: [
 
-    // clean up if an error goes unhandled.
+      '--no-lazy'] }).
+
+
+    on('message', message => {
+      if ((message === null || message === void 0 ? void 0 : message.status) == 'ready') this.emit('ready');
+    }).
+    on('close', code => {
+      if (code === 8) console.error('Error detected, waiting for changes.');
+    });
+
+    this.subprocess.on('exit', (code, signal) => console.log(`[Subprocess ${this.subprocess.pid}]: signal ${signal}, code ${code};`));
+
+
     process.on('SIGINT', (code, signal) => {
-      process.kill(this.subprocess.pid, 'SIGTERM')
-      console.log(`[Process ${process.pid}]: interrupt;`)
-      // process.exit(0) // process.abort()  // process.kill()
-    })
+      process.kill(this.subprocess.pid, 'SIGTERM');
+      console.log(`[Process ${process.pid}]: interrupt;`);
 
-    return this.subprocess
-  }
-}
+    });
+
+    return this.subprocess;
+  }}exports.ManageSubprocess = ManageSubprocess;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NvdXJjZS9tYW5hZ2VTdWJwcm9jZXNzLmpzIl0sIm5hbWVzIjpbIk1hbmFnZVN1YnByb2Nlc3MiLCJFdmVudEVtaXR0ZXIiLCJjb25zdHJ1Y3RvciIsImNsaUFkYXB0ZXJQYXRoIiwicHJvY2VzcyIsIm9uIiwiY29kZSIsInNpZ25hbCIsImNvbnNvbGUiLCJsb2ciLCJwaWQiLCJydW5JblN1YnByb2Nlc3MiLCJzdWJwcm9jZXNzIiwia2lsbCIsImFyZ3VtZW50TGlzdCIsImFyZ3VtZW50cyIsImxlbmd0aCIsInN0cmluZ2lmeUFyZ3MiLCJKU09OIiwic3RyaW5naWZ5IiwiY2hpbGRQcm9jZXNzIiwiZm9yayIsInN0ZGlvIiwiZXhlY0FyZ3YiLCJtZXNzYWdlIiwic3RhdHVzIiwiZW1pdCIsImVycm9yIl0sIm1hcHBpbmdzIjoia01BQUE7QUFDQTs7OztBQUlPLE1BQU1BLGdCQUFOLFNBQStCQyxlQUEvQixDQUE0Qzs7Ozs7QUFLakRDLEVBQUFBLFdBQVcsQ0FBQyxFQUFFQyxjQUFGLEVBQUQsRUFBcUI7QUFDOUI7QUFDQSxTQUFLQSxjQUFMLEdBQXNCQSxjQUF0Qjs7QUFFQUMsSUFBQUEsT0FBTyxDQUFDQyxFQUFSLENBQVcsT0FBWCxFQUFvQixDQUFDQyxJQUFELEVBQU9DLE1BQVAsS0FBa0JDLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLFlBQVdMLE9BQU8sQ0FBQ00sR0FBSSxhQUFZSCxNQUFPLFVBQVNELElBQUssR0FBckUsQ0FBdEM7QUFDRDs7QUFFREssRUFBQUEsZUFBZSxHQUFHO0FBQ2hCLFFBQUksS0FBS0MsVUFBVCxFQUFxQixLQUFLQSxVQUFMLENBQWdCQyxJQUFoQjs7QUFFckIsU0FBS0MsWUFBTCxHQUFvQixDQUFDLElBQUlDLFNBQVMsQ0FBQ0MsTUFBVixJQUFvQixDQUFwQixHQUF3QixLQUFLRixZQUFMLElBQXFCLEVBQTdDLEdBQWtEQyxTQUF0RCxDQUFELENBQXBCOztBQUVBLFFBQUlFLGFBQWEsR0FBR0MsSUFBSSxDQUFDQyxTQUFMLENBQWUsS0FBS0wsWUFBcEIsQ0FBcEI7O0FBRUEsU0FBS0YsVUFBTCxHQUFrQlE7QUFDZkMsSUFBQUEsSUFEZSxDQUNWLEtBQUtsQixjQURLLEVBQ1csQ0FBQ2MsYUFBRCxDQURYLEVBQzRCO0FBQzFDSyxNQUFBQSxLQUFLLEVBQUUsQ0FBQyxDQUFELEVBQUksQ0FBSixFQUFPLENBQVAsRUFBVSxLQUFWLENBRG1DO0FBRTFDQyxNQUFBQSxRQUFRLEVBQUU7O0FBRVIsaUJBRlEsQ0FGZ0MsRUFENUI7OztBQVFmbEIsSUFBQUEsRUFSZSxDQVFaLFNBUlksRUFRRG1CLE9BQU8sSUFBSTtBQUN4QixVQUFJLENBQUFBLE9BQU8sU0FBUCxJQUFBQSxPQUFPLFdBQVAsWUFBQUEsT0FBTyxDQUFFQyxNQUFULEtBQW1CLE9BQXZCLEVBQWdDLEtBQUtDLElBQUwsQ0FBVSxPQUFWO0FBQ2pDLEtBVmU7QUFXZnJCLElBQUFBLEVBWGUsQ0FXWixPQVhZLEVBV0hDLElBQUksSUFBSTtBQUNuQixVQUFJQSxJQUFJLEtBQUssQ0FBYixFQUFnQkUsT0FBTyxDQUFDbUIsS0FBUixDQUFjLHNDQUFkO0FBQ2pCLEtBYmUsQ0FBbEI7O0FBZUEsU0FBS2YsVUFBTCxDQUFnQlAsRUFBaEIsQ0FBbUIsTUFBbkIsRUFBMkIsQ0FBQ0MsSUFBRCxFQUFPQyxNQUFQLEtBQWtCQyxPQUFPLENBQUNDLEdBQVIsQ0FBYSxlQUFjLEtBQUtHLFVBQUwsQ0FBZ0JGLEdBQUksYUFBWUgsTUFBTyxVQUFTRCxJQUFLLEdBQWhGLENBQTdDOzs7QUFHQUYsSUFBQUEsT0FBTyxDQUFDQyxFQUFSLENBQVcsUUFBWCxFQUFxQixDQUFDQyxJQUFELEVBQU9DLE1BQVAsS0FBa0I7QUFDckNILE1BQUFBLE9BQU8sQ0FBQ1MsSUFBUixDQUFhLEtBQUtELFVBQUwsQ0FBZ0JGLEdBQTdCLEVBQWtDLFNBQWxDO0FBQ0FGLE1BQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLFlBQVdMLE9BQU8sQ0FBQ00sR0FBSSxlQUFwQzs7QUFFRCxLQUpEOztBQU1BLFdBQU8sS0FBS0UsVUFBWjtBQUNELEdBNUNnRCxDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IEV2ZW50RW1pdHRlciBmcm9tICdldmVudHMnXG5pbXBvcnQgY2hpbGRQcm9jZXNzIGZyb20gJ2NoaWxkX3Byb2Nlc3MnXG5cbi8vIG1hbmFnZSBmb3JrZWQgc3VicHJvY2VzcyBhbGxvd2luZyB0byByZXN0YXJ0IHRoZSBzdWJwcm9jZXNzIG9uIGRlbWFuZC5cbi8vIFByb2Nlc3Mgc2lnbmFscyAtIGh0dHA6Ly9tYW43Lm9yZy9saW51eC9tYW4tcGFnZXMvbWFuNy9zaWduYWwuNy5odG1sXG5leHBvcnQgY2xhc3MgTWFuYWdlU3VicHJvY2VzcyBleHRlbmRzIEV2ZW50RW1pdHRlciB7XG4gIHN1YnByb2Nlc3MgLy8gY2hpbGQgc3VicHJvY2Vzc1xuICBjbGlBZGFwdGVyUGF0aCAvLyB0aGUgcGF0aCB0byB0aGUgY2xpIGVudHJ5cG9pbnQgZmlsZSwgdGhhdCB3aWxsIHJlY2VpdmUgYXJndW1lbnRzIGZyb20gdGhlIGNoaWxkIHByb2Nlc3MgZm9yayBmdW5jdGlvbiBhbmQgcGFzcyBpdCB0byB0aGUgcHJvZ3JhbW1hdGljIG1vZHVsZSBhcGkuXG4gIGFyZ3VtZW50TGlzdCAvLyBjYWNoZWQgYXJndW1lbnRzIHRvIGJlIHVzZWQgZm9yIHJ1bm5pbmcgc3VicHJvY2Vzc2VzXG5cbiAgY29uc3RydWN0b3IoeyBjbGlBZGFwdGVyUGF0aCB9KSB7XG4gICAgc3VwZXIoKVxuICAgIHRoaXMuY2xpQWRhcHRlclBhdGggPSBjbGlBZGFwdGVyUGF0aFxuXG4gICAgcHJvY2Vzcy5vbignY2xvc2UnLCAoY29kZSwgc2lnbmFsKSA9PiBjb25zb2xlLmxvZyhgW1Byb2Nlc3MgJHtwcm9jZXNzLnBpZH1dOiBzaWduYWwgJHtzaWduYWx9LCBjb2RlICR7Y29kZX07YCkpXG4gIH1cblxuICBydW5JblN1YnByb2Nlc3MoKSB7XG4gICAgaWYgKHRoaXMuc3VicHJvY2VzcykgdGhpcy5zdWJwcm9jZXNzLmtpbGwoKVxuXG4gICAgdGhpcy5hcmd1bWVudExpc3QgPSBbLi4uKGFyZ3VtZW50cy5sZW5ndGggPT0gMCA/IHRoaXMuYXJndW1lbnRMaXN0IHx8IFtdIDogYXJndW1lbnRzKV1cblxuICAgIGxldCBzdHJpbmdpZnlBcmdzID0gSlNPTi5zdHJpbmdpZnkodGhpcy5hcmd1bWVudExpc3QpIC8vIHBhcmFtZXRycyBmb3IgbW9kdWxlIHRvIGJlIHJ1biBpbiBzdWJwcm9jZXNzLlxuICAgIC8vIHJ1bm5pbmcgaW4gc3VicHJvY2VzcyBwcmV2ZW50cyBhbGxvd3MgdG8gY29udHJvbCB0aGUgYXBwbGljYXRpb24gYW5kIHRlcm1pbmF0ZSBpdCB3aGVuIG5lZWRlZC5cbiAgICB0aGlzLnN1YnByb2Nlc3MgPSBjaGlsZFByb2Nlc3NcbiAgICAgIC5mb3JrKHRoaXMuY2xpQWRhcHRlclBhdGgsIFtzdHJpbmdpZnlBcmdzXSwge1xuICAgICAgICBzdGRpbzogWzAsIDEsIDIsICdpcGMnXSxcbiAgICAgICAgZXhlY0FyZ3Y6IFtcbiAgICAgICAgICAvLyAnLS1pbnNwZWN0LWJyaz0xMjcyJywgLy8gaW5zcGVjdCBzdWJwcm9jZXNzIHdpdGggcmFuZG9tIHBvcnQgdG8gcHJldmVudCBjb25mbGljdHMgd2l0aCB0aGUgbWFpbiBwcm9jZXNzIGluIGNhc2UgaXQncyBpbnNwZWN0IGZsYWcgd2FzIHR1cm5lZCBvbi5cbiAgICAgICAgICAnLS1uby1sYXp5JywgLy8gZm9yIGRlYnVnZ2luZyBwdXJwb3NlcyB3aWxsIGxvYWQgbW9kdWxlcyBzZXF1ZW50aWFsbHlcbiAgICAgICAgXSxcbiAgICAgIH0pXG4gICAgICAub24oJ21lc3NhZ2UnLCBtZXNzYWdlID0+IHtcbiAgICAgICAgaWYgKG1lc3NhZ2U/LnN0YXR1cyA9PSAncmVhZHknKSB0aGlzLmVtaXQoJ3JlYWR5JylcbiAgICAgIH0pXG4gICAgICAub24oJ2Nsb3NlJywgY29kZSA9PiB7XG4gICAgICAgIGlmIChjb2RlID09PSA4KSBjb25zb2xlLmVycm9yKCdFcnJvciBkZXRlY3RlZCwgd2FpdGluZyBmb3IgY2hhbmdlcy4nKVxuICAgICAgfSlcblxuICAgIHRoaXMuc3VicHJvY2Vzcy5vbignZXhpdCcsIChjb2RlLCBzaWduYWwpID0+IGNvbnNvbGUubG9nKGBbU3VicHJvY2VzcyAke3RoaXMuc3VicHJvY2Vzcy5waWR9XTogc2lnbmFsICR7c2lnbmFsfSwgY29kZSAke2NvZGV9O2ApKVxuXG4gICAgLy8gY2xlYW4gdXAgaWYgYW4gZXJyb3IgZ29lcyB1bmhhbmRsZWQuXG4gICAgcHJvY2Vzcy5vbignU0lHSU5UJywgKGNvZGUsIHNpZ25hbCkgPT4ge1xuICAgICAgcHJvY2Vzcy5raWxsKHRoaXMuc3VicHJvY2Vzcy5waWQsICdTSUdURVJNJylcbiAgICAgIGNvbnNvbGUubG9nKGBbUHJvY2VzcyAke3Byb2Nlc3MucGlkfV06IGludGVycnVwdDtgKVxuICAgICAgLy8gcHJvY2Vzcy5leGl0KDApIC8vIHByb2Nlc3MuYWJvcnQoKSAgLy8gcHJvY2Vzcy5raWxsKClcbiAgICB9KVxuXG4gICAgcmV0dXJuIHRoaXMuc3VicHJvY2Vzc1xuICB9XG59XG4iXX0=

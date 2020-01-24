@@ -1,52 +1,53 @@
-import path from 'path'
-import assert from 'assert'
-import BrowserSync from 'browser-sync'
-import { watchFile } from '@deployment/nodejsLiveReload'
-// import proxyMiddleware from 'http-proxy-middleware'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.browserLivereload = browserLivereload;
+var _assert = _interopRequireDefault(require("assert"));
+var _browserSync = _interopRequireDefault(require("browser-sync"));
+var _nodejsLiveReload = require("@deployment/nodejsLiveReload");
 
-export async function browserLivereload({
-  targetProject, // `Project class` instance created by `scriptManager` from the configuration file of the target project.
+
+async function browserLivereload({
+  targetProject,
   rootServicePort = 8080,
   rootServiceHost = 'localhost',
-  watchPathList = false,
-} = {}) {
-  assert(targetProject, `targetProject must be passed.`)
+  watchPathList = false } =
+{}) {
+  (0, _assert.default)(targetProject, `targetProject must be passed.`);
 
-  let browserSync = BrowserSync.create('Info - locahost server'),
-    browserSyncProxy = { port: 9090, host: 'localhost' }
+  let browserSync = _browserSync.default.create('Info - locahost server'),
+  browserSyncProxy = { port: 9090, host: 'localhost' };
 
   browserSync.init({
     host: browserSyncProxy.host,
-    port: browserSyncProxy.port, // the newly proxified port, which provides access to the running server and injects livereload script.
+    port: browserSyncProxy.port,
     proxy: {
-      target: `${rootServiceHost}:${rootServicePort}`, // existing running server
-      // ws: true // when localhost webapp uses websocket also.
-    },
+      target: `${rootServiceHost}:${rootServicePort}` },
+
+
     ui: {
       port: 9901,
       weinre: {
-        port: 9902,
-      },
-    },
+        port: 9902 } },
+
+
     logLevel: 'info' || 'debug',
     logConnections: true,
-    open: false, // open browser false.
-    scriptPath: () => `http://${browserSyncProxy.host}:${browserSyncProxy.port}/browser-sync/browser-sync-client.js`,
-  })
+    open: false,
+    scriptPath: () => `http://${browserSyncProxy.host}:${browserSyncProxy.port}/browser-sync/browser-sync-client.js` });
+
 
   function restart() {
-    browserSync.reload()
+    browserSync.reload();
   }
 
   if (watchPathList && Array.isArray(watchPathList))
-    await watchFile({
-      // to be run after file notification
-      triggerCallback: () => restart(),
-      // TODO: make sure explicitly adding `./node_modules/` into the this array, will prevent it from being ignored.
-      fileArray: watchPathList,
-      ignoreNodeModules: true,
-      logMessage: true,
-    })
+  await (0, _nodejsLiveReload.watchFile)({
 
-  return { restart }
+    triggerCallback: () => restart(),
+
+    fileArray: watchPathList,
+    ignoreNodeModules: true,
+    logMessage: true });
+
+
+  return { restart };
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NvdXJjZS9icm93c2VyQ2xpZW50UmVsb2FkLmpzIl0sIm5hbWVzIjpbImJyb3dzZXJMaXZlcmVsb2FkIiwidGFyZ2V0UHJvamVjdCIsInJvb3RTZXJ2aWNlUG9ydCIsInJvb3RTZXJ2aWNlSG9zdCIsIndhdGNoUGF0aExpc3QiLCJicm93c2VyU3luYyIsIkJyb3dzZXJTeW5jIiwiY3JlYXRlIiwiYnJvd3NlclN5bmNQcm94eSIsInBvcnQiLCJob3N0IiwiaW5pdCIsInByb3h5IiwidGFyZ2V0IiwidWkiLCJ3ZWlucmUiLCJsb2dMZXZlbCIsImxvZ0Nvbm5lY3Rpb25zIiwib3BlbiIsInNjcmlwdFBhdGgiLCJyZXN0YXJ0IiwicmVsb2FkIiwiQXJyYXkiLCJpc0FycmF5IiwidHJpZ2dlckNhbGxiYWNrIiwiZmlsZUFycmF5IiwiaWdub3JlTm9kZU1vZHVsZXMiLCJsb2dNZXNzYWdlIl0sIm1hcHBpbmdzIjoiO0FBQ0E7QUFDQTtBQUNBOzs7QUFHTyxlQUFlQSxpQkFBZixDQUFpQztBQUN0Q0MsRUFBQUEsYUFEc0M7QUFFdENDLEVBQUFBLGVBQWUsR0FBRyxJQUZvQjtBQUd0Q0MsRUFBQUEsZUFBZSxHQUFHLFdBSG9CO0FBSXRDQyxFQUFBQSxhQUFhLEdBQUcsS0FKc0I7QUFLcEMsRUFMRyxFQUtDO0FBQ04sdUJBQU9ILGFBQVAsRUFBdUIsK0JBQXZCOztBQUVBLE1BQUlJLFdBQVcsR0FBR0MscUJBQVlDLE1BQVosQ0FBbUIsd0JBQW5CLENBQWxCO0FBQ0VDLEVBQUFBLGdCQUFnQixHQUFHLEVBQUVDLElBQUksRUFBRSxJQUFSLEVBQWNDLElBQUksRUFBRSxXQUFwQixFQURyQjs7QUFHQUwsRUFBQUEsV0FBVyxDQUFDTSxJQUFaLENBQWlCO0FBQ2ZELElBQUFBLElBQUksRUFBRUYsZ0JBQWdCLENBQUNFLElBRFI7QUFFZkQsSUFBQUEsSUFBSSxFQUFFRCxnQkFBZ0IsQ0FBQ0MsSUFGUjtBQUdmRyxJQUFBQSxLQUFLLEVBQUU7QUFDTEMsTUFBQUEsTUFBTSxFQUFHLEdBQUVWLGVBQWdCLElBQUdELGVBQWdCLEVBRHpDLEVBSFE7OztBQU9mWSxJQUFBQSxFQUFFLEVBQUU7QUFDRkwsTUFBQUEsSUFBSSxFQUFFLElBREo7QUFFRk0sTUFBQUEsTUFBTSxFQUFFO0FBQ05OLFFBQUFBLElBQUksRUFBRSxJQURBLEVBRk4sRUFQVzs7O0FBYWZPLElBQUFBLFFBQVEsRUFBRSxVQUFVLE9BYkw7QUFjZkMsSUFBQUEsY0FBYyxFQUFFLElBZEQ7QUFlZkMsSUFBQUEsSUFBSSxFQUFFLEtBZlM7QUFnQmZDLElBQUFBLFVBQVUsRUFBRSxNQUFPLFVBQVNYLGdCQUFnQixDQUFDRSxJQUFLLElBQUdGLGdCQUFnQixDQUFDQyxJQUFLLHNDQWhCNUQsRUFBakI7OztBQW1CQSxXQUFTVyxPQUFULEdBQW1CO0FBQ2pCZixJQUFBQSxXQUFXLENBQUNnQixNQUFaO0FBQ0Q7O0FBRUQsTUFBSWpCLGFBQWEsSUFBSWtCLEtBQUssQ0FBQ0MsT0FBTixDQUFjbkIsYUFBZCxDQUFyQjtBQUNFLFFBQU0saUNBQVU7O0FBRWRvQixJQUFBQSxlQUFlLEVBQUUsTUFBTUosT0FBTyxFQUZoQjs7QUFJZEssSUFBQUEsU0FBUyxFQUFFckIsYUFKRztBQUtkc0IsSUFBQUEsaUJBQWlCLEVBQUUsSUFMTDtBQU1kQyxJQUFBQSxVQUFVLEVBQUUsSUFORSxFQUFWLENBQU47OztBQVNGLFNBQU8sRUFBRVAsT0FBRixFQUFQO0FBQ0QiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgcGF0aCBmcm9tICdwYXRoJ1xuaW1wb3J0IGFzc2VydCBmcm9tICdhc3NlcnQnXG5pbXBvcnQgQnJvd3NlclN5bmMgZnJvbSAnYnJvd3Nlci1zeW5jJ1xuaW1wb3J0IHsgd2F0Y2hGaWxlIH0gZnJvbSAnQGRlcGxveW1lbnQvbm9kZWpzTGl2ZVJlbG9hZCdcbi8vIGltcG9ydCBwcm94eU1pZGRsZXdhcmUgZnJvbSAnaHR0cC1wcm94eS1taWRkbGV3YXJlJ1xuXG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gYnJvd3NlckxpdmVyZWxvYWQoe1xuICB0YXJnZXRQcm9qZWN0LCAvLyBgUHJvamVjdCBjbGFzc2AgaW5zdGFuY2UgY3JlYXRlZCBieSBgc2NyaXB0TWFuYWdlcmAgZnJvbSB0aGUgY29uZmlndXJhdGlvbiBmaWxlIG9mIHRoZSB0YXJnZXQgcHJvamVjdC5cbiAgcm9vdFNlcnZpY2VQb3J0ID0gODA4MCxcbiAgcm9vdFNlcnZpY2VIb3N0ID0gJ2xvY2FsaG9zdCcsXG4gIHdhdGNoUGF0aExpc3QgPSBmYWxzZSxcbn0gPSB7fSkge1xuICBhc3NlcnQodGFyZ2V0UHJvamVjdCwgYHRhcmdldFByb2plY3QgbXVzdCBiZSBwYXNzZWQuYClcblxuICBsZXQgYnJvd3NlclN5bmMgPSBCcm93c2VyU3luYy5jcmVhdGUoJ0luZm8gLSBsb2NhaG9zdCBzZXJ2ZXInKSxcbiAgICBicm93c2VyU3luY1Byb3h5ID0geyBwb3J0OiA5MDkwLCBob3N0OiAnbG9jYWxob3N0JyB9XG5cbiAgYnJvd3NlclN5bmMuaW5pdCh7XG4gICAgaG9zdDogYnJvd3NlclN5bmNQcm94eS5ob3N0LFxuICAgIHBvcnQ6IGJyb3dzZXJTeW5jUHJveHkucG9ydCwgLy8gdGhlIG5ld2x5IHByb3hpZmllZCBwb3J0LCB3aGljaCBwcm92aWRlcyBhY2Nlc3MgdG8gdGhlIHJ1bm5pbmcgc2VydmVyIGFuZCBpbmplY3RzIGxpdmVyZWxvYWQgc2NyaXB0LlxuICAgIHByb3h5OiB7XG4gICAgICB0YXJnZXQ6IGAke3Jvb3RTZXJ2aWNlSG9zdH06JHtyb290U2VydmljZVBvcnR9YCwgLy8gZXhpc3RpbmcgcnVubmluZyBzZXJ2ZXJcbiAgICAgIC8vIHdzOiB0cnVlIC8vIHdoZW4gbG9jYWxob3N0IHdlYmFwcCB1c2VzIHdlYnNvY2tldCBhbHNvLlxuICAgIH0sXG4gICAgdWk6IHtcbiAgICAgIHBvcnQ6IDk5MDEsXG4gICAgICB3ZWlucmU6IHtcbiAgICAgICAgcG9ydDogOTkwMixcbiAgICAgIH0sXG4gICAgfSxcbiAgICBsb2dMZXZlbDogJ2luZm8nIHx8ICdkZWJ1ZycsXG4gICAgbG9nQ29ubmVjdGlvbnM6IHRydWUsXG4gICAgb3BlbjogZmFsc2UsIC8vIG9wZW4gYnJvd3NlciBmYWxzZS5cbiAgICBzY3JpcHRQYXRoOiAoKSA9PiBgaHR0cDovLyR7YnJvd3NlclN5bmNQcm94eS5ob3N0fToke2Jyb3dzZXJTeW5jUHJveHkucG9ydH0vYnJvd3Nlci1zeW5jL2Jyb3dzZXItc3luYy1jbGllbnQuanNgLFxuICB9KVxuXG4gIGZ1bmN0aW9uIHJlc3RhcnQoKSB7XG4gICAgYnJvd3NlclN5bmMucmVsb2FkKClcbiAgfVxuXG4gIGlmICh3YXRjaFBhdGhMaXN0ICYmIEFycmF5LmlzQXJyYXkod2F0Y2hQYXRoTGlzdCkpXG4gICAgYXdhaXQgd2F0Y2hGaWxlKHtcbiAgICAgIC8vIHRvIGJlIHJ1biBhZnRlciBmaWxlIG5vdGlmaWNhdGlvblxuICAgICAgdHJpZ2dlckNhbGxiYWNrOiAoKSA9PiByZXN0YXJ0KCksXG4gICAgICAvLyBUT0RPOiBtYWtlIHN1cmUgZXhwbGljaXRseSBhZGRpbmcgYC4vbm9kZV9tb2R1bGVzL2AgaW50byB0aGUgdGhpcyBhcnJheSwgd2lsbCBwcmV2ZW50IGl0IGZyb20gYmVpbmcgaWdub3JlZC5cbiAgICAgIGZpbGVBcnJheTogd2F0Y2hQYXRoTGlzdCxcbiAgICAgIGlnbm9yZU5vZGVNb2R1bGVzOiB0cnVlLFxuICAgICAgbG9nTWVzc2FnZTogdHJ1ZSxcbiAgICB9KVxuXG4gIHJldHVybiB7IHJlc3RhcnQgfVxufVxuIl19
