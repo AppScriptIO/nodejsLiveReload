@@ -2,6 +2,7 @@ import EventEmitter from 'events'
 import childProcess from 'child_process'
 
 // manage forked subprocess allowing to restart the subprocess on demand.
+// Process signals - http://man7.org/linux/man-pages/man7/signal.7.html
 export class ManageSubprocess extends EventEmitter {
   subprocess // child subprocess
   cliAdapterPath // the path to the cli entrypoint file, that will receive arguments from the child process fork function and pass it to the programmatic module api.
@@ -10,9 +11,8 @@ export class ManageSubprocess extends EventEmitter {
   constructor({ cliAdapterPath }) {
     super()
     this.cliAdapterPath = cliAdapterPath
-    // clean up if an error goes unhandled.
-    process.on('exit', () => this.subprocess && this.subprocess.kill())
-    process.on('SIGINT', () => console.log('Caught interrupt signal') && process.exit(0))
+
+    process.on('close', (code, signal) => console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`))
   }
 
   runInSubprocess() {
@@ -30,13 +30,21 @@ export class ManageSubprocess extends EventEmitter {
           '--no-lazy', // for debugging purposes will load modules sequentially
         ],
       })
-      .on('exit', () => console.log(`subprocess ${this.subprocess.pid} exited.`))
       .on('message', message => {
         if (message?.status == 'ready') this.emit('ready')
       })
       .on('close', code => {
         if (code === 8) console.error('Error detected, waiting for changes.')
       })
+
+    this.subprocess.on('exit', (code, signal) => console.log(`[Subprocess ${this.subprocess.pid}]: signal ${signal}, code ${code};`))
+
+    // clean up if an error goes unhandled.
+    process.on('SIGINT', (code, signal) => {
+      process.kill(this.subprocess.pid, 'SIGTERM')
+      console.log(`[Process ${process.pid}]: interrupt;`)
+      // process.exit(0) // process.abort()  // process.kill()
+    })
 
     return this.subprocess
   }

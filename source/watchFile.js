@@ -4,7 +4,7 @@ import { Promise } from 'core-js'
 // Watch files and when a modification detected, execute callback
 export function watchFile({
   // TODO: make sure explicitly adding `./node_modules/` into the this array, will prevent it from being ignored.
-  fileArray,
+  fileArray, // file, dir, glob, or array - Uses globs array for defining files patterns - https://github.com/isaacs/node-glob
   triggerCallback,
   // Following delay solves the issue of closley received notifications, preventing duplicate actions for the same related notifications (e.g. docker-windows-volume-watcher mistakengly triggers duplicate notifications for each chagne).
   notificationTriggerDelay = 100, // 100 ms between accepting notifications and triggering action. This prevents duplicate executions fron wrong immediate duplicate notification fo the container.
@@ -12,10 +12,7 @@ export function watchFile({
   ignoreNodeModules = true,
   logMessage = false, // console log messages on events e.g. log list of files being watched.
 }) {
-  let watcher = chokidar.watch(fileArray, {
-    ignored: ignoreNodeModules ? new RegExp(/node_modules/) : false,
-    usePolling: false,
-  })
+  let watcher = chokidar.watch(fileArray, { ignored: ignoreNodeModules ? new RegExp(/node_modules/) : false, usePolling: false })
 
   return new Promise((resolve, reject) => {
     watcher
