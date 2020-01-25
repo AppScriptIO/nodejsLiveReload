@@ -13,6 +13,7 @@ export function watchFile({
   logMessage = false, // console log messages on events e.g. log list of files being watched.
 }) {
   let watcher = chokidar.watch(fileArray, { ignored: ignoreNodeModules ? new RegExp(/node_modules/) : false, usePolling: false })
+  process.on('SIGINT', () => watcher.close()) // make sure to close watcher to prevent hanging node process.
 
   return new Promise((resolve, reject) => {
     watcher
