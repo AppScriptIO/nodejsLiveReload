@@ -56,7 +56,7 @@ export class ManageSubprocess extends EventEmitter {
 }
 
 // clean up if an error goes unhandled or interrupt signal received.
-// TODO: for some reason the hooks for process events are not executed. Fix.
+// TODO: make sure the hooks for process events are not executed.
 // process.exit(0) // process.abort()  // process.kill()
 // process.on('exit', (code, signal) => {
 //   console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`)
@@ -66,4 +66,5 @@ export class ManageSubprocess extends EventEmitter {
 // process.on('SIGTERM', (code, signal) => console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`))
 process.on('SIGINT', (code, signal) => {
   console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`)
+  ManageSubprocess.terminateSubprocess()
 })
